@@ -1,0 +1,149 @@
+/* Variables */
+@red: #FF4136;
+@green: #2ECC40;
+@teal: #39CCCC;
+@fuchsia: #F012BE;
+@orange: #FF851B;
+@gray: #AAAAAA;
+@colors: @red, @green, @teal, @fuchsia, @orange, @gray;
+
+/* Less functions & mixins*/
+.animation(@arguments) {
+	-webkit-animation: @arguments;
+	-moz-animation: @arguments;
+	animation: @arguments;
+}
+.transition(@transition) {
+	-webkit-transition: @transition;
+	-moz-transition: @transition;
+	transition: @transition;
+}
+.scale(@value) {
+  -moz-transform: scale(@value);
+	-webkit-transform: scale(@value);
+	transform: scale(@value);
+}
+.border-radius(@value) {
+	-moz-border-radius: @value;
+	-webkit-border-radius: @value;
+	border-radius: @value;
+}
+.scale-animation(@name) {
+  @keyframes @name {
+    0%, 100% {
+      .scale(1);
+    }
+    50% {
+      .scale(1.1);
+    }
+  }
+  .animation(@name .5s);
+}
+.generate-colors(@n, @i: 1) when (@i <= @n) {
+  @color-name: extract(@colors, @i);
+  &.color-@{i} {
+    background-color: @color-name;
+    .scale-animation(~"scale-@{i}");
+  }
+  .generate-colors(@n, (@i + 1));
+}
+.fullSize() {
+  position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+/* Styles */
+.b-content {
+  width: 500px;
+  font-size: 16px;
+  margin: 0 auto;
+}
+.b-squareBox {
+	position: relative;
+	width: 100%;
+  &:before{
+	  content: "";
+	  display: block;
+	  padding-top: 100%;
+  }
+  .b-tileContainer {
+    .fullSize();
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 5px;
+    .b-tileRow {
+      display: flex;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+    .b-tile {
+      flex-grow: 1;
+      .border-radius(3px);
+      margin: 2px 2px;
+      cursor: pointer;
+      .transition(background-color .5s);
+      &.active {
+        border-color: #0074D9;
+        box-shadow: 0 0 8px #0074D9;
+      }
+      .generate-colors(length(@colors));
+    }
+  }
+  .b-gameOverScreen {
+    .fullSize();
+    opacity: 0.7;
+    background-color: #000;
+    font-size: 60px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+}
+.b-settings {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .b-range {
+    width: 100px;
+  }
+  .b-settings__item {
+    display: flex;
+    align-items: center;
+  }
+}
+.b-score {
+  margin: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  .b-score__player {
+    display: flex;
+    align-items: center;
+    .b-playerTile {
+      width: 20px;
+      height: 20px;
+      margin: 0 10px;
+      display: inline-block;
+      .border-radius(3px);      
+      .generate-colors(length(@colors));
+    }
+  }
+}
+@media(max-width: 600px) {
+  .b-content {
+    width: 300px;
+    font-size: 12px;
+  }
+  .b-squareBox .b-gameOverScreen {
+    font-size: 30px;
+  }
+  .b-settings .b-range {
+     width: 50px;
+  }
+}
